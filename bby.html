@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Nila Maa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital@0;1&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #fdf2f4;
+            font-family: 'Poppins', sans-serif;
+            color: #4a4a4a;
+            overflow-x: hidden; 
+        }
+        h1 {
+            font-family: 'Lora', serif;
+            font-style: italic;
+            color: #d18a99;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2.2em;
+            z-index: 1; 
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            width: 100%;
+            max-width: 500px;
+            z-index: 1;
+        }
+        .envelope {
+            background-color: white;
+            border: 1px solid #f0e4e6;
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(209, 138, 153, 0.1);
+            transition: all 0.3s ease;
+            font-family: 'Lora', serif;
+            color: #d18a99;
+            font-size: 1.2em;
+        }
+        
+        @keyframes wiggle {
+            0%, 100% { transform: translateY(-5px) rotate(0deg); }
+            25% { transform: translateY(-5px) rotate(-3deg); }
+            50% { transform: translateY(-5px) rotate(3deg); }
+            75% { transform: translateY(-5px) rotate(-3deg); }
+        }
+
+        .envelope:hover {
+            box-shadow: 0 8px 25px rgba(209, 138, 153, 0.2);
+            background-color: #fff9fa;
+            animation: wiggle 0.4s ease-in-out infinite; 
+        }
+        
+        footer {
+            margin-top: 40px;
+            font-size: 0.85em;
+            color: #d18a99;
+            text-align: center;
+            font-style: italic;
+            z-index: 1;
+        }
+
+        /* The New Music Play/Pause Button */
+        .music-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            font-size: 1.8em;
+            cursor: pointer;
+            z-index: 1001; /* Keeps it above the blurry background */
+            background: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(209, 138, 153, 0.3);
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+        .music-btn:hover {
+            animation: wiggle 0.4s ease-in-out infinite;
+        }
+        .music-btn.paused {
+            filter: grayscale(100%);
+            opacity: 0.5; /* Dims the heart when music is off */
+        }
+
+        .heart {
+            position: fixed;
+            bottom: -10vh;
+            color: #f7d6de; 
+            z-index: 0; 
+            animation: float 6s linear infinite;
+            opacity: 0;
+            pointer-events: none; 
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) scale(0.5) rotate(0deg); opacity: 0.8; }
+            100% { transform: translateY(-120vh) scale(1.2) rotate(360deg); opacity: 0; }
+        }
+
+        @media (max-width: 480px) {
+            .grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            .envelope {
+                padding: 25px 20px;
+                font-size: 1.1em;
+            }
+            h1 {
+                font-size: 1.8em;
+                margin-bottom: 20px;
+            }
+            /* Adjust button size for mobile */
+            .music-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5em;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(253, 242, 244, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            backdrop-filter: blur(3px);
+        }
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .letter {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 15px;
+            max-width: 85%;
+            width: 350px;
+            max-height: 80vh; 
+            overflow-y: auto; 
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(209, 138, 153, 0.15);
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.4s ease;
+            box-sizing: border-box;
+        }
+        
+        .letter::-webkit-scrollbar {
+            width: 6px;
+        }
+        .letter::-webkit-scrollbar-thumb {
+            background-color: #f0e4e6;
+            border-radius: 10px;
+        }
+
+        .modal-overlay.active .letter {
+            transform: translateY(0);
+        }
+        
+        .close-btn {
+            position: sticky;
+            top: 0;
+            float: right;
+            font-size: 1.8em;
+            cursor: pointer;
+            color: #d18a99;
+            transition: color 0.2s;
+            line-height: 1;
+            z-index: 10;
+            background: white; 
+            border-radius: 50%;
+            padding: 0 5px;
+        }
+        .close-btn:hover {
+            color: #a86472;
+        }
+        .letter-text {
+            font-family: 'Lora', serif;
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: #555;
+            clear: both;
+        }
+
+        .memory-item {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px dashed #f0e4e6;
+        }
+        .memory-img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .memory-desc {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9em;
+            color: #777;
+            margin-top: 12px;
+            font-style: italic;
+            line-height: 1.5;
+        }
+        
+        .final-message {
+            margin-top: 35px;
+            padding: 20px;
+            background-color: #fff9fa;
+            border-radius: 10px;
+            color: #a86472;
+            font-family: 'Lora', serif;
+            font-size: 1.1em;
+            font-style: italic;
+            border: 1px solid #f0e4e6;
+        }
+
+        @media (max-width: 480px) {
+            .letter {
+                padding: 30px 20px;
+                width: 90%;
+            }
+            .letter-text {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bgMusic" src="apna bana le.mp3" loop></audio>
+
+    <div id="musicToggle" class="music-btn paused" title="Play/Pause Music">💖</div>
+
+    <h1>Four Notes For You My Love...</h1>
+
+    <div class="grid">
+        <div class="envelope" onclick="openLetter(1)">To My Heart</div>
+        <div class="envelope" onclick="openLetter(2)">To My World</div>
+        <div class="envelope" onclick="openLetter(3)">To My Soul</div>
+        <div class="envelope" onclick="openLetter(4)">To My Universe</div>
+    </div>
+
+    <footer>Made with ❤️ by Khivannesh for Nilakshee</footer>
+
+    <div class="modal-overlay" id="modal">
+        <div class="letter">
+            <span class="close-btn" onclick="closeLetter()">×</span>
+            <div id="letterText" class="letter-text"></div>
+        </div>
+    </div>
+
+    <script>
+        const letters = {
+            1: "Happy Birthday bbyyyyyy! ❤️ I have no words right now, but I'm just the happiest person when I'm with you and you mean everything to me. I love you so much. Being your everything is the biggest blessing and the greatest gift ever. I promise to always do my best and give my all for you. You're 22 nowwwww HEHEHE. I want to be the one who keeps you the happiest ever. This is your first birthday with me, and I'm going to make sure I make you the happiest on every birthday from now on, starting with this one. I love youuuuu mutta kannu 💕💕💕💕",
+            2: "Do you know how stunning and amazing you look? You completely captivate me every single day. You're honestly the prettiest being to ever exist on this earth like like like like like a literal goddess. I don't care how many times I have to remind you, you are the most beautiful person inside and out. Your pretty eyes, your cute smile, your soft lips, your soothing voice, your amazing personality, your sweet nature...And the best of all? My wife. And you will always be pretty, my love. Always. There's no one who could ever compare to you. Especially not next to me hehe😘😘😘",
+            3: `Words can barely scratch the surface, but I love you more than anything. My love for you has no limits. It’s endless.
+In every life we live, I know we’ll always find each other. My heart belongs to you, because wherever you stand is where I feel at home.
+Thank you for trusting me with your heart.
+Thank you for being such an amazing wife.
+Thank you for being you.
+The truth is… you love me. And because you love me, I know I must be doing something right in my life.
+Even all the words that exist in every language aren’t enough to explain how much I love you.
+I love you. I love you. I love you.
+Main tumse bahuttttt pyaar karta hoon, bebiiii.
+I pyaarrrr you sooo muchhhh.
+Naan unnai bahuttttt kadhalikkiren, chellamm.
+Happy Birthday once again, my love 💞
+               <br><br>
+               <img src="us.jpeg" alt="Us" class="memory-img">`,
+            4: `Here are just a few of my favorite moments with you...
+               
+               <div class="memory-item">
+                   <img src="memory1.jpeg" alt="Memory 1" class="memory-img">
+                   <p class="memory-desc">Your first ever gift to me and i love it a lottttt</p>
+               </div>
+               
+               <div class="memory-item">
+                   <img src="memory2.jpeg" alt="Memory 2" class="memory-img">
+                   <p class="memory-desc">our animated picture of the first time we met</p>
+               </div>
+               
+               <div class="memory-item">
+                   <img src="memory3.jpeg" alt="Memory 3" class="memory-img">
+                   <p class="memory-desc">all the gifts i made for youuuuuuuuuuuu</p>
+               </div>
+
+               <div class="memory-item">
+                   <img src="memory4.jpeg" alt="Memory 4" class="memory-img">
+                   <p class="memory-desc">to our little garden adventure</p>
+               </div>
+
+               <div class="memory-item">
+                   <img src="memory5.jpeg" alt="Memory 5" class="memory-img">
+                   <p class="memory-desc">AND TO YOUR BIRTHDAYYYYY CAKE</p>
+               </div>
+               
+               <div class="final-message">
+                   "I know i missed out a lot but look at how far we came together love. From strangers during the night of June 14th to being my entire universe. Every life we live, our souls belong together"
+               </div>`
+        };
+
+        const modal = document.getElementById('modal');
+        const textContainer = document.getElementById('letterText');
+        const bgMusic = document.getElementById('bgMusic');
+        const musicBtn = document.getElementById('musicToggle');
+        let musicStarted = false;
+
+        // Handles the Play/Pause logic for the new heart button
+        function toggleMusic() {
+            if (bgMusic.paused) {
+                bgMusic.play();
+                musicBtn.classList.remove('paused');
+                musicStarted = true;
+            } else {
+                bgMusic.pause();
+                musicBtn.classList.add('paused');
+            }
+        }
+
+        // Attach the click event to the heart button
+        musicBtn.addEventListener('click', toggleMusic);
+
+        function openLetter(num) {
+            // Still auto-starts the music on the first note click if she hasn't clicked the heart yet
+            if (!musicStarted) {
+                bgMusic.play();
+                musicBtn.classList.remove('paused');
+                musicStarted = true;
+            }
+
+            textContainer.innerHTML = letters[num];
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 10);
+        }
+
+        function closeLetter() {
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                document.querySelector('.letter').scrollTop = 0; 
+            }, 400); 
+        }
+
+        modal.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                closeLetter();
+            }
+        });
+
+        function createHearts() {
+            for (let i = 0; i < 20; i++) {
+                let heart = document.createElement('div');
+                heart.innerHTML = '❤';
+                heart.classList.add('heart');
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                heart.style.animationDelay = Math.random() * 5 + 's';
+                heart.style.fontSize = (Math.random() * 15 + 15) + 'px';
+                
+                document.body.appendChild(heart);
+            }
+        }
+        
+        createHearts();
+
+    </script>
+</body>
+</html>
